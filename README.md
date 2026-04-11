@@ -1,6 +1,7 @@
 # 🧠 MenteLeve – Banco de Dados com Prisma + SQLite
 
 > Projeto de Banco de Dados – Adrielly Costa, Gabrielle Oliveira e Luisa Varejão
+> Gerenciador de Tarefas - MenteLeve
 
 ---
 
