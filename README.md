@@ -25,7 +25,7 @@ npm install
 npx prisma generate
 ```
 
-### 3. Crie o banco de dados e aplique as migrations
+### 3. Crie o banco de dados e aplique as migrações
 
 ```bash
 npx prisma migrate dev --name init
@@ -33,7 +33,7 @@ npx prisma migrate dev --name init
 
 > Isso cria o arquivo `prisma/dev.db` (SQLite) com todas as tabelas.
 
-### 4. Popule o banco com dados de exemplo
+### 4. Prencha o banco com dados de exemplo
 
 ```bash
 node prisma/seed.js
