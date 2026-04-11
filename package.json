@@ -1,0 +1,26 @@
+{
+  "name": "menteleve",
+  "version": "1.0.0",
+  "description": "Plataforma digital de organização pessoal, hábitos, metas e finanças",
+  "main": "index.js",
+  "scripts": {
+    "db:migrate": "npx prisma migrate dev --name init",
+    "db:seed": "node prisma/seed.js",
+    "db:studio": "npx prisma studio",
+    "db:reset": "npx prisma migrate reset --force",
+    "db:generate": "npx prisma generate",
+    "setup": "npm install && npx prisma generate && npx prisma migrate dev --name init && node prisma/seed.js"
+  },
+  "prisma": {
+    "seed": "node prisma/seed.js"
+  },
+  "keywords": [],
+  "author": "Adrielly Costa, Gabrielle Oliveira, Luisa Varejão",
+  "license": "ISC",
+  "devDependencies": {
+    "prisma": "^6.0.0"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.0.0"
+  }
+}
