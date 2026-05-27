@@ -1,0 +1,68 @@
+# MenteLeve - Docker Compose
+# Trabalho de Sistemas Distribuídos
+# Alunos: Adrielly Costa, Gabrielle Oliveira e Luisa Varejão
+
+services:
+
+  # 1. BANCO DE DADOS (apenas interno, sem porta exposta)
+  postgres:
+    image: postgres:16-alpine
+    container_name: menteleve-db
+    restart: always
+    environment:
+      POSTGRES_DB: menteleve
+      POSTGRES_USER: menteleve_user
+      POSTGRES_PASSWORD: menteleve_pass
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - menteleve-network
+
+  # 2. APLICAÇÃO WEB (porta 8080)
+  menteleve-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: menteleve-app
+    restart: always
+    ports:
+      - "8080:3000"
+    environment:
+      DATABASE_URL: postgresql://menteleve_user:menteleve_pass@postgres:5432/menteleve
+      PORT: 3000
+      NODE_ENV: production
+    depends_on:
+      - postgres
+    networks:
+      - menteleve-network
+
+  # 3. ADMINER - administração do banco (porta 8081)
+  adminer:
+    image: adminer:latest
+    container_name: menteleve-adminer
+    restart: always
+    ports:
+      - "8081:8080"
+    networks:
+      - menteleve-network
+
+  # 4. PORTAINER - gerenciamento gráfico (porta 9000)
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: menteleve-portainer
+    restart: always
+    ports:
+      - "9000:9000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    networks:
+      - menteleve-network
+
+volumes:
+  postgres_data:
+  portainer_data:
+
+networks:
+  menteleve-network:
+    driver: bridge

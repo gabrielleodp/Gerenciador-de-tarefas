@@ -1,0 +1,98 @@
+// MenteLeve - Schema Prisma com PostgreSQL
+// Alunos: Adrielly Costa, Gabrielle Oliveira e Luisa Varejão
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Usuario {
+  id         String   @id @default(uuid())
+  nome       String
+  email      String   @unique
+  senhaHash  String   @map("senha_hash")
+  premium    Boolean  @default(false)
+  criadoEm   DateTime @default(now()) @map("criado_em")
+
+  tarefas    Tarefa[]
+  habitos    Habito[]
+  metas      Meta[]
+  financas   Financa[]
+
+  @@map("usuarios")
+}
+
+model Tarefa {
+  id           String    @id @default(uuid())
+  usuarioId    String    @map("usuario_id")
+  titulo       String
+  dataPrevista DateTime? @map("data_prevista")
+  concluida    Boolean   @default(false)
+  criadoEm     DateTime  @default(now()) @map("criado_em")
+  usuario      Usuario   @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+
+  @@map("tarefas")
+}
+
+model Habito {
+  id         String           @id @default(uuid())
+  usuarioId  String           @map("usuario_id")
+  nome       String
+  frequencia FrequenciaHabito
+  criadoEm   DateTime         @default(now()) @map("criado_em")
+  usuario    Usuario          @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  registros  RegistroHabito[]
+
+  @@map("habitos")
+}
+
+model RegistroHabito {
+  id         String   @id @default(uuid())
+  habitoId   String   @map("habito_id")
+  data       DateTime
+  concluido  Boolean  @default(false)
+  habito     Habito   @relation(fields: [habitoId], references: [id], onDelete: Cascade)
+
+  @@unique([habitoId, data])
+  @@map("registros_habito")
+}
+
+model Meta {
+  id            String   @id @default(uuid())
+  usuarioId     String   @map("usuario_id")
+  titulo        String
+  prazo         DateTime
+  progressoPct  Int      @default(0) @map("progresso_pct")
+  concluida     Boolean  @default(false)
+  criadoEm      DateTime @default(now()) @map("criado_em")
+  usuario       Usuario  @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+
+  @@map("metas")
+}
+
+model Financa {
+  id         String      @id @default(uuid())
+  usuarioId  String      @map("usuario_id")
+  tipo       TipoFinanca
+  valor      Float
+  descricao  String?
+  data       DateTime
+  criadoEm   DateTime    @default(now()) @map("criado_em")
+  usuario    Usuario     @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+
+  @@map("financas")
+}
+
+enum FrequenciaHabito {
+  diaria
+  semanal
+}
+
+enum TipoFinanca {
+  entrada
+  saida
+}
